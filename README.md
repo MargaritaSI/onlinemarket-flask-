@@ -1,7 +1,9 @@
 # Onlinemarket
+about selling item
+you can learn more and buy
 ## Roadmap
 I plan to add to the project:
-
+my contacts
 
 
 ## Contributing
