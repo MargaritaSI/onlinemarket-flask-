@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -26,9 +26,14 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/create')
+@app.route('/create', methods=['POST', 'GET']) # track data from post
 def create():
-    return render_template('create.html')
+    if request.method == 'POST':
+        title = request.form['title']
+
+
+    else:
+        return render_template('create.html')
 
 
 if __name__ == '__main__':  # if we start all our projest starting with main.py
