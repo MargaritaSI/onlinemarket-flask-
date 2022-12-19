@@ -30,7 +30,16 @@ def about():
 def create():
     if request.method == 'POST':
         title = request.form['title']
+        price = request.form['price']
 
+        item = Item(title=title, price=price)
+
+        try:
+            db.session.add(item)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return 'error here'
 
     else:
         return render_template('create.html')
