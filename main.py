@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/margaritasmyslava/PycharmProjects/CFG/pythonProject/pythonProject/onlinemarket/shop.db'
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/margaritasmyslava/PycharmProjects/CFG/pythonProject/pythonProject/onlinemarket/shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 db = SQLAlchemy()
 db.init_app(app)
+
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,10 +17,13 @@ class Item(db.Model):
     isActive = db.Column(db.Boolean, default=True)
     text = db.Column(db.Text, nullable=False)
 
-
+    def __repr__(self):
+        return f'Written Data: {self.title}'
 @app.route('/')
 def index():
-    return render_template('index.html')
+    items = Item.query.order_by(Item.price).all() # take items from table and show it in return
+    return render_template('index.html', data=items)
+
 
 
 @app.route('/about')
@@ -26,7 +31,7 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/create', methods=['POST', 'GET']) # track data from post
+@app.route('/create', methods=['POST', 'GET'])  # track data from post
 def create():
     if request.method == 'POST':
         title = request.form['title']
