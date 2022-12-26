@@ -5,8 +5,9 @@ from cloudipsp import Api, Checkout
 
 app = Flask(__name__)
 app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/margaritasmyslava/PycharmProjects/CFG/pythonProject/pythonProject/onlinemarket/shop.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
+    "SQLALCHEMY_DATABASE_URI"
+] = "sqlite:////Users/margaritasmyslava/PycharmProjects/CFG/pythonProject/pythonProject/onlinemarket/shop.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -20,47 +21,48 @@ class Item(db.Model):
     text = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
-        return f'Written Data: {self.title}'
-@app.route('/')
+        return f"Written Data: {self.title}"
+
+
+@app.route("/")
 def index():
-    items = Item.query.order_by(Item.price).all() # take items from table and show it in return
-    return render_template('index.html', data=items)
+    items = Item.query.order_by(
+        Item.price
+    ).all()  # take items from table and show it in return
+    return render_template("index.html", data=items)
 
 
-
-@app.route('/about')
+@app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template("about.html")
 
-@app.route('/buy/<int:id>')
+
+@app.route("/buy/<int:id>")
 def item_buy(id):
     item = Item.query.get(id)
 
-    api = Api(merchant_id=1396424,
-              secret_key='test')
+    api = Api(merchant_id=1396424, secret_key="test")
     checkout = Checkout(api=api)
-    data = {
-        "currency": "EUR",
-        "amount": str(item.price) + '00'
-    }
-    url = checkout.url(data).get('checkout_url')
+    data = {"currency": "EUR", "amount": str(item.price) + "00"}
+    url = checkout.url(data).get("checkout_url")
     return redirect(url)
 
-@app.route('/create', methods=['POST', 'GET'])  # track data  from post
-def create():
-    if request.method != 'POST':
-        return render_template('create.html')
 
-    title = request.form['title']
-    price = request.form['price']
-    text = request.form['text']
+@app.route("/create", methods=["POST", "GET"])  # track data  from post
+def create():
+    if request.method != "POST":
+        return render_template("create.html")
+
+    title = request.form["title"]
+    price = request.form["price"]
+    text = request.form["text"]
 
     item = Item(title=title, price=price, text=text)
 
     db.session.add(item)
     db.session.commit()
-    return redirect('/')
+    return redirect("/")
 
 
-if __name__ == '__main__':  # if we start all our projest starting with main.py
+if __name__ == "__main__":  # if we start all our projest starting with main.py
     app.run(debug=True)  # show our error on webpage(after deploy-> True)
